@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +13,20 @@ import { Luggage, Plus, List } from "lucide-react";
 
 const HomeScreen = () => {
   const navigate = useNavigate();
-  // This would be replaced with actual data from a state management solution or API
   const [savedLists, setSavedLists] = useState<
-    { id: string; name: string; date: string }[]
-  >([
-    { id: "1", name: "Summer Vacation", date: "2023-06-15" },
-    { id: "2", name: "Business Trip", date: "2023-07-22" },
-  ]);
+    { id: string; title: string; date: string }[]
+  >([]);
+
+  // Load saved lists from localStorage
+  useEffect(() => {
+    const lists = JSON.parse(localStorage.getItem("packingLists") || "[]");
+    const formattedLists = lists.map((list: any) => ({
+      id: list.id,
+      title: list.title,
+      date: list.startDate || new Date().toISOString().split("T")[0],
+    }));
+    setSavedLists(formattedLists);
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8 bg-background min-h-screen">
